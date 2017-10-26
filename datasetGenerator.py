@@ -127,20 +127,35 @@ class datasetGenerator:
         #     print im[1]
 
         if self.nTrainSamples is not None:
-            self.Xtrain = [image[0] for image in images[0:self.nTrainSamples]]
-            self.Ytrain = [image[1] for image in images[0:self.nTrainSamples]]
+            print "creating training samples"
+            offset = 0
+            # print offset
+            self.Xtrain = [image[0] for image in images[
+                offset:offset+self.nTrainSamples]]
+            self.Ytrain = [image[1] for image in images[
+                offset:offset+self.nTrainSamples]]
 
             if self.nTestSamples is not None:
+                print "creating test samples"
+                offset += self.nTrainSamples
+                # print offset
                 self.Xtest = [image[0] for image in images[
-                    self.nTrainSamples+1:self.nTestSamples]]
+                    offset+1:offset+self.nTestSamples]]
                 self.Ytest = [image[1] for image in images[
-                    self.nTrainSamples+1:self.nTestSamples]]
+                    offset+1:offset+self.nTestSamples]]
 
             if self.nValidateSamples is not None:
-                self.Xtest = [image[0] for image in images[
-                    self.nTestSamples+1:self.nValidateSamples]]
-                self.Ytest = [image[1] for image in images[
-                    self.nTestSamples+1:self.nValidateSamples]]
+                print "creating validation samples"
+                if self.nTestSamples is not None:
+                    offset += self.nTestSamples
+                else:
+                    offset += self.nTrainSamples
+                # print offset
+
+                self.Xvalidate = [image[0] for image in images[
+                    offset+1:offset+self.nValidateSamples]]
+                self.Yvalidate = [image[1] for image in images[
+                    offset+1:offset+self.nValidateSamples]]
 
         else:
             self.Xtrain = [image[0] for image in images]
@@ -215,5 +230,5 @@ class datasetGenerator:
 
 if __name__ == '__main__':
     dataGen = datasetGenerator(nClasses=5, nTrainSamples=800,
-                    nTestSamples=100, nValidateSamples=100)
+                               nTestSamples=100, nValidateSamples=100)
     dataGen.createDataSet()
