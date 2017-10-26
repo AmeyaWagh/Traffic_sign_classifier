@@ -6,9 +6,11 @@ import os
 import pickle
 import numpy as np
 import cv2
+import csv
 from keras.utils import np_utils
 
 modelPath = './model'
+signNamesFile = './signnames.csv'
 
 validation_file= './data/validate.p'
 
@@ -16,6 +18,19 @@ with open(validation_file, mode='rb') as f:
     valid = pickle.load(f)
 
 X_valid, y_valid = valid['features'], valid['labels']
+
+def readSignNameCSV(nClasses=None):
+        with open(signNamesFile, 'r') as fp:
+            data = list(csv.DictReader(fp))
+        # convert dictionary to list and format file names
+        data = [
+            # (int(everyData['ClassId']),
+             everyData['SignName'] for everyData in data]
+
+        if nClasses is not None:
+            data = data[0:self.nClasses]
+        return data
+
 
 def normalize_image(image):
     return -0.5 + (image*1.0)/(255)
@@ -53,3 +68,20 @@ score = loaded_model.evaluate(X_valid, y_valid, verbose=0)
 print 'score',score
 
 
+predictions = loaded_model.predict(X_valid)
+
+predictions = [pred.index(max(pred)) for pred in predictions.tolist()]
+print predictions
+
+signData = readSignNameCSV()
+print signData
+
+try:
+	for i in range(len(X_valid)):
+		cv2.imshow('image',X_valid[i])
+		print "predicted value:",signData[predictions[i]]
+		cv2.waitKey(0)
+		cv2.destroyAllWindows()
+except KeyboardInterrupt:
+	cv2.destroyAllWindows()
+	quit()
