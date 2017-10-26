@@ -20,16 +20,16 @@ with open(validation_file, mode='rb') as f:
 X_valid, y_valid = valid['features'], valid['labels']
 
 def readSignNameCSV(nClasses=None):
-        with open(signNamesFile, 'r') as fp:
-            data = list(csv.DictReader(fp))
-        # convert dictionary to list and format file names
-        data = [
-            # (int(everyData['ClassId']),
-             everyData['SignName'] for everyData in data]
+    with open(signNamesFile, 'r') as fp:
+        data = list(csv.DictReader(fp))
+    # convert dictionary to list and format file names
+    data = [
+        # (int(everyData['ClassId']),
+         everyData['SignName'] for everyData in data]
 
-        if nClasses is not None:
-            data = data[0:self.nClasses]
-        return data
+    if nClasses is not None:
+        data = data[0:self.nClasses]
+    return data
 
 
 def normalize_image(image):
