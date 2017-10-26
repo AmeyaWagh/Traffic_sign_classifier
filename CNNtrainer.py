@@ -4,6 +4,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
+from keras.models import model_from_json
 
 import pickle
 import numpy as np
@@ -11,6 +12,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import pandas as pd
+
+import os
+import shutil
 
 training_file = './data/train.p'
 validation_file= './data/validate.p'
@@ -129,3 +133,17 @@ model.fit(X_train, y_train,
 
 score = model.evaluate(X_test, y_test, verbose=0)
 print 'score',score
+
+modelPath = './model'
+
+if os.path.isdir(modelPath):
+    shutil.rmtree(modelPath)
+
+os.mkdir(modelPath)
+
+model_json = model.to_json()
+with open(os.path.join(modelPath,"model.json"), "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
+model.save_weights(os.path.join(modelPath,"model.h5"))
+print("Saved model to disk")    
