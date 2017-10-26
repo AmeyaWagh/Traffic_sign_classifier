@@ -8,9 +8,11 @@ import os
 from random import shuffle
 import traceback
 import shutil
+import time
+import datetime
 
 
-class Parser:
+class datasetGenerator:
 
     def __init__(self, nClasses=None, nTrainSamples=None,
                  nTestSamples=None, nValidateSamples=None,
@@ -34,6 +36,8 @@ class Parser:
 
         self.Xvalidate = []
         self.Yvalidate = []
+
+        self.info = ""
 
         self.dirNameFormatter = lambda x: "%05d" % (int(x))
         self.signNameData = self.readSignNameCSV()
@@ -95,13 +99,13 @@ class Parser:
                     descriptor['Roi.Y1']:descriptor['Roi.Y2']]
 
             # resize image
-            im = cv2.resize(im,self.imageSize)
+            im = cv2.resize(im, self.imageSize)
             # print np.shape(im)
-            X_dataset.append((im,descriptor['ClassId']))
-        return X_dataset     
+            X_dataset.append((im, descriptor['ClassId']))
+        return X_dataset
 
     def createDataSet(self):
-        images=[]
+        images = []
         for everySign in self.signNameData:
             # print everySign
             filePath = os.path.join(self.basePath, everySign[0])
@@ -122,60 +126,94 @@ class Parser:
         # for im in images:
         #     print im[1]
 
-
         if self.nTrainSamples is not None:
-            self.Xtrain = [image[0] for image in images[0:self.nTrainSamples]]    
+            self.Xtrain = [image[0] for image in images[0:self.nTrainSamples]]
             self.Ytrain = [image[1] for image in images[0:self.nTrainSamples]]
 
             if self.nTestSamples is not None:
-                self.Xtest =  [image[0] for image in images[self.nTrainSamples+1:self.nTestSamples]]
-                self.Ytest =  [image[1] for image in images[self.nTrainSamples+1:self.nTestSamples]]
+                self.Xtest = [image[0] for image in images[
+                    self.nTrainSamples+1:self.nTestSamples]]
+                self.Ytest = [image[1] for image in images[
+                    self.nTrainSamples+1:self.nTestSamples]]
 
             if self.nValidateSamples is not None:
-                self.Xtest =  [image[0] for image in images[self.nTestSamples+1:self.nValidateSamples]]
-                self.Ytest =  [image[1] for image in images[self.nTestSamples+1:self.nValidateSamples]]
-        
+                self.Xtest = [image[0] for image in images[
+                    self.nTestSamples+1:self.nValidateSamples]]
+                self.Ytest = [image[1] for image in images[
+                    self.nTestSamples+1:self.nValidateSamples]]
+
         else:
-            self.Xtrain = [image[0] for image in images]   
+            self.Xtrain = [image[0] for image in images]
             self.Ytrain = [image[1] for image in images]
-        
-        print "shape of Xtrain",np.shape(self.Xtrain)
-        print "shape of Ytrain",np.shape(self.Ytrain)
 
-        print "shape of Xtest",np.shape(self.Xtest)
-        print "shape of Ytest",np.shape(self.Ytest)
-
-        print "shape of Xvalidate",np.shape(self.Xvalidate)
-        print "shape of Yvalidate",np.shape(self.Yvalidate)
+        print "shape of Xtrain", np.shape(self.Xtrain)
+        print "shape of Ytrain", np.shape(self.Ytrain)
+        print "shape of Xtest", np.shape(self.Xtest)
+        print "shape of Ytest", np.shape(self.Ytest)
+        print "shape of Xvalidate", np.shape(self.Xvalidate)
+        print "shape of Yvalidate", np.shape(self.Yvalidate)
         self.createFiles()
 
+    def generateInfo(self):
+        nl = "\n"
+        self.info = ""
+        self.info += "nClasses = {}".format(self.nClasses)+nl
+        self.info += "total samples = {}".format(self.dataLen)+nl
+        self.info += "nTrainSamples = {}".format(self.nTrainSamples)+nl
+        self.info += "nTestSamples = {}".format(self.nTestSamples)+nl
+        self.info += "nValidateSamples = {}".format(
+            self.nValidateSamples)+nl+nl
+
+        self.info += "shape of Xtrain = {}".format(np.shape(self.Xtrain))+nl
+        self.info += "shape of Ytrain = {}".format(np.shape(self.Ytrain))+nl+nl
+
+        self.info += "shape of Xtest = {}".format(np.shape(self.Xtest))+nl
+        self.info += "shape of Ytest = {}".format(np.shape(self.Ytest))+nl+nl
+
+        self.info += "shape of Xvalidate = {}".format(
+            np.shape(self.Xvalidate))+nl
+        self.info += "shape of Yvalidate = {}".format(
+            np.shape(self.Yvalidate))+nl+nl
+
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        self.info += "File created on {}".format(st)
+
+        with open(os.path.join(self.destPath, "info.txt"), "w") as fp:
+            fp.write(self.info)
 
     def createFiles(self):
         # remove previous files
         if os.path.isdir(self.destPath):
             shutil.rmtree(self.destPath)
 
-        #create new directory
+        # create new directory
         os.mkdir(self.destPath)
 
         try:
-            trainData = {'features':self.Xtrain,'labels':self.Ytrain}
-            pickle.dump( trainData, open( os.path.join(self.destPath,"train.p"), "wb" ) )
+            trainData = {'features': self.Xtrain, 'labels': self.Ytrain}
+            pickle.dump(trainData, open(
+                os.path.join(self.destPath, "train.p"), "wb"))
 
             if self.nTestSamples is not None:
-                testData = {'features':self.Xtest,'labels':self.Ytest}
-                pickle.dump( testData, open( os.path.join(self.destPath,"test.p"), "wb" ) )
+                testData = {'features': self.Xtest, 'labels': self.Ytest}
+                pickle.dump(testData, open(
+                    os.path.join(self.destPath, "test.p"), "wb"))
 
             if self.nValidateSamples is not None:
-                validateData = {'features':self.Xvalidate,'labels':self.Yvalidate}
-                pickle.dump( validateData, open( os.path.join(self.destPath,"validate.p"), "wb" ) )
+                validateData = {'features': self.Xvalidate,
+                                'labels': self.Yvalidate}
+                pickle.dump(validateData, open(
+                    os.path.join(self.destPath, "validate.p"), "wb"))
 
+            self.generateInfo()
             print "Files created"
-        
+
         except Exception as e:
             traceback.print_exc(e)
-            print "Could not create files"    
+            print "Could not create files"
 
 if __name__ == '__main__':
-    parser = Parser(nClasses=5, nTrainSamples=800, nTestSamples=100,nValidateSamples=100)
-    parser.createDataSet()
+    dataGen = datasetGenerator(nClasses=5, nTrainSamples=800,
+                    nTestSamples=100, nValidateSamples=100)
+    dataGen.createDataSet()
