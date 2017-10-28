@@ -65,8 +65,6 @@ loaded_model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 score = loaded_model.evaluate(X_valid, y_valid, verbose=0)
-print 'score',score
-
 
 predictions = loaded_model.predict(X_valid)
 
@@ -74,14 +72,7 @@ predictions = [pred.index(max(pred)) for pred in predictions.tolist()]
 print predictions
 
 signData = readSignNameCSV()
-print signData
-
-try:
-	for i in range(len(X_valid)):
-		cv2.imshow('image',X_valid[i])
-		print "predicted value:",signData[predictions[i]]
-		cv2.waitKey(0)
-		cv2.destroyAllWindows()
-except KeyboardInterrupt:
-	cv2.destroyAllWindows()
-	quit()
+print map(lambda x:signData[x],predictions)
+print 'SCORE:'
+print '  |----------->	error:',score[0]
+print '  `----------->	accuracy:{}%'.format(score[1]*100.0)
