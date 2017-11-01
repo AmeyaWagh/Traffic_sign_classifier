@@ -81,7 +81,6 @@ if __name__ == '__main__':
 
     #Example 
 
-    
     classifier = Classifier(imageShape=(28, 28, 1), nClasses=5)
 
     validation_file = './data/validate.p'
