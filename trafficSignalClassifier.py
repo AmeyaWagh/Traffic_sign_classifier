@@ -71,13 +71,17 @@ class Classifier:
 
     def predict(self, X):
         X = self.preProcessImage(X)
-        print np.shape(X)
+        print(np.shape(X))
         predictions = self.model.predict(X)
         predictions = [self.signNames[pred.index(
             max(pred))] for pred in predictions.tolist()]
         return predictions
 
 if __name__ == '__main__':
+
+    #Example 
+
+    
     classifier = Classifier(imageShape=(28, 28, 1), nClasses=5)
 
     validation_file = './data/validate.p'
@@ -96,12 +100,12 @@ if __name__ == '__main__':
 
     try:
         for img in X_valid:
-            print classifier.predict([img])
+            print(classifier.predict([img]))
             # img=np.resize(img,(100,100,1))
             cv2.imshow('image', img)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
     except:
         cv2.destroyAllWindows()
-        print "bye\n\n"
+        print("bye\n\n")
         quit()

@@ -77,30 +77,6 @@ y_valid = np_utils.to_categorical(y_valid, n_classes)
 print "imageshape after grayscale",X_train[0].shape
 #------------------------------------------------------------------#
 
-# labels = pd.read_csv('signnames.csv').values
-# #plotting 50 random images the training dataset images 
-# X_t, y_t = train['features'], train['labels']
-# count = 1 
-# fig = plt.figure(figsize=(50, 50))
-# for i in range(0,500,50):
-#     ax = fig.add_subplot(10,5 ,count)
-#     # plt.plot(X_t[i])
-#     plt.imshow(X_t[i])
-#     ax.set_title(labels[y_t[i]],fontsize= 30)
-#     count += 1
-# #------------------------------------------------------------------#
-# def plot_classes_distribution(labels):
-#     fig ,ax = plt.subplots(figsize = (10,15))
-#     unique, counts = np.unique(labels, return_counts=True)
-#     ax.barh(unique,counts,align = 'center', color = 'blue')
-#     #ax.set_yticks()
-#     ax.invert_yaxis()
-#     ax.set_xlabel('Frequency of labels')
-#     plt.show()
-
-# plot_classes_distribution(y_train)
-# plot_classes_distribution(y_valid)
-# plot_classes_distribution(y_test)
 
 #------------------------------------------------------------------#
 
