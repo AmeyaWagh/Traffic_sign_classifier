@@ -1,4 +1,4 @@
-# Traffic signal classifier for Self driving car
+# Traffic sign classifier for Self driving car
 
 LeNet implementation in Keras is used to build CNN. The CNN is trained on GTSRB dataset.
 This classifier pipelined with image segmentation module such as Haar cascade classifier to detect traffic signs can be used for Self driving cars. 
@@ -66,7 +66,7 @@ The model is saved in model directory as 2 files
 An example is given in trafficSignalClassifier.py\
 Add cropped images to test directory and run the following code
 ```
-$ python trafficSignalClassifier.py
+$ python trafficSignClassifier.py
 ```
 
 ### Complete directory structure
@@ -88,13 +88,10 @@ $ python trafficSignalClassifier.py
 ├── model
 │   ├── model.h5
 │   └── model.json
-├── __pycache__
-│   └── trafficSignalClassifier.cpython-35.pyc
 ├── README.md
 ├── signnames.csv
 ├── test
 │   └── test_50_1.jpg
-├── trafficSignalClassifier.py
-└── trafficSignalClassifier.pyc
+└── trafficSignClassifier.py
 
 ```
