@@ -88,23 +88,32 @@ if __name__ == '__main__':
     with open(validation_file, mode='rb') as f:
         valid = pickle.load(f)
 
-
+    X_valid = []
     #-------------------------------------------------------#
-    _im = cv2.imread('./test/test_50_1.jpg')
-    _im = np.array(_im)    
+    for im_file in os.listdir(os.path.join('.','test')):
+        print im_file 
+        _im = cv2.imread(os.path.join('.','test',im_file))
+        _im = np.array(_im)  
+        X_valid.append(_im)  
     #-------------------------------------------------------#    
 
     # X_valid, y_valid = valid['features'], valid['labels']
-    X_valid = [_im]
-
+    # X_valid = [_im]
+    print np.shape(X_valid)
     try:
         for img in X_valid:
-            print(classifier.predict([img]))
+            signText = classifier.predict([img])[0]
             # img=np.resize(img,(100,100,1))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            print(signText)
+            (x,y,c) = np.shape(img)
+            # print x,y,c
+            cv2.putText(img,signText,(int(0.10*x),int(0.20*y)), font, 0.5,(0,255,0),1,cv2.LINE_AA)
             cv2.imshow('image', img)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
-    except:
+    except Exception as e:
+        print e
         cv2.destroyAllWindows()
         print("bye\n\n")
         quit()
