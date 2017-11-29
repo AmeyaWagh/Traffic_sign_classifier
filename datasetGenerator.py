@@ -229,6 +229,7 @@ class datasetGenerator:
             print "Could not create files"
 
 if __name__ == '__main__':
-    dataGen = datasetGenerator(nClasses=5, nTrainSamples=800,
-                               nTestSamples=100, nValidateSamples=100)
+    dataGen = datasetGenerator(nClasses=43, nTrainSamples=31367,
+                               nTestSamples=3920, nValidateSamples=3920)
+    #dataGen = datasetGenerator()
     dataGen.createDataSet()
