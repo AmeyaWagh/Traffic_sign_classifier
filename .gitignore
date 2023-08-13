@@ -3,3 +3,5 @@
 /GTSRB
 /data
 /model
+lightning_logs
+tb_logs
